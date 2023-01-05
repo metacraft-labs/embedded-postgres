@@ -183,10 +183,11 @@ func startPostgres(ep *EmbeddedPostgres) error {
 	postgresBinary := filepath.Join(ep.config.binariesPath, "bin/pg_ctl")
 	postgresProcess := exec.Command(postgresBinary, "start", "-w",
 		"-D", ep.config.dataPath,
-		"-o", fmt.Sprintf(`"-p %d"`, ep.config.port))
+		"-o", fmt.Sprintf(`"-p %d"`, ep.config.port),
+		"-o", `"-k /tmp"`)
 	postgresProcess.Stdout = ep.syncedLogger.file
 	postgresProcess.Stderr = ep.syncedLogger.file
-
+	//postgresProcess.Dir = "/home/martin/repositories/boss3"
 	if err := postgresProcess.Run(); err != nil {
 		return fmt.Errorf("could not start postgres using %s", postgresProcess.String())
 	}
